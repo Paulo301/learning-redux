@@ -10,17 +10,22 @@ const initialState: ICartState = {
 }
 
 export const cart = createSlice({
-  name: 'counter',
+  name: 'cart',
   initialState,
   reducers: {
     addProductToCart: (state, action: PayloadAction<IProduct>) => {
-      state.items = [
-        ...state.items.filter(item => item.product.id !== action.payload.id),
-        {
+      const productInCartIndex = state.items.findIndex(item => 
+        item.product.id === action.payload.id
+      );
+
+      if(productInCartIndex >= 0){
+        state.items[productInCartIndex].quantity += 1;
+      } else {
+        state.items.push({
           product: action.payload,
           quantity: 1
-        }
-      ]
+        });
+      }
     }
   }
 })
