@@ -6,14 +6,16 @@ import { IProduct } from '../../../interfaces/product';
 import { ICartState } from './types';
 
 const initialState: ICartState = {
-  items: []
+  items: [],
+  failedStockCheck: []
 }
 
 export const cart = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    addProductToCart: (state, action: PayloadAction<IProduct>) => {
+    addProductToCartRequest: (state, action: PayloadAction<IProduct>) => {},
+    addProductToCartSuccess: (state, action: PayloadAction<IProduct>) => {
       const productInCartIndex = state.items.findIndex(item => 
         item.product.id === action.payload.id
       );
@@ -26,10 +28,17 @@ export const cart = createSlice({
           quantity: 1
         });
       }
+    },
+    addProductToCartFailure: (state, action: PayloadAction<number>) => {
+      state.failedStockCheck.push(action.payload);
     }
   }
 })
 
-export const { addProductToCart } = cart.actions
+export const { 
+  addProductToCartRequest, 
+  addProductToCartSuccess, 
+  addProductToCartFailure 
+} = cart.actions
 
 export default cart.reducer

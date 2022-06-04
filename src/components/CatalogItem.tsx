@@ -1,7 +1,8 @@
 import React, { useCallback } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IProduct } from "../interfaces/product";
-import { addProductToCart } from "../store/modules/cart/reducer";
+import { IState } from "../store";
+import { addProductToCartRequest } from "../store/modules/cart/reducer";
 
 interface CatalogItemProps {
   product: IProduct;
@@ -10,8 +11,12 @@ interface CatalogItemProps {
 export function CatalogItem({ product }: CatalogItemProps) {
   const dispatch = useDispatch();
 
+  const hasFailedStockCheck = useSelector<IState, boolean>(state => {
+    return state.cart.failedStockCheck.includes(product.id);
+  });
+
   const handleAddProductToCart = useCallback(() => {
-    dispatch(addProductToCart(product));
+    dispatch(addProductToCartRequest(product));
   }, [dispatch, product]);
 
   return (
@@ -25,6 +30,11 @@ export function CatalogItem({ product }: CatalogItemProps) {
       >
         Comprar
       </button>
+      {
+        hasFailedStockCheck && (
+          <span style={{ color: 'red' }}>Falta de estoque</span>
+        )
+      }
     </article>
   );
 }
